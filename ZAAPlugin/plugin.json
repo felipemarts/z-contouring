@@ -1,0 +1,9 @@
+{
+    "name": "Z Anti-Aliasing",
+    "author": "Felipe Martins",
+    "version": "0.1.0",
+    "description": "Non-planar Z contouring for smoother top surfaces on curved and sloped geometry.",
+    "api": 8,
+    "supported_sdk_versions": [8],
+    "i18n-catalog": "zaa"
+}
