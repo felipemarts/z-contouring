@@ -6,7 +6,9 @@ and applies non-planar Z contouring to smooth top surfaces.
 
 from __future__ import annotations
 
-from PyQt6.QtCore import QObject
+import os
+
+from PyQt6.QtCore import QObject, QUrl
 
 from UM.Extension import Extension
 from UM.Logger import Logger
@@ -23,6 +25,8 @@ class ZAAExtension(QObject, Extension):
 
         self.setMenuName("Z Anti-Aliasing")
         self.addMenuItem("Settings...", self._showSettings)
+
+        self._settings_dialog = None
 
         # Default settings
         self._enabled: bool = True
@@ -65,16 +69,20 @@ class ZAAExtension(QObject, Extension):
 
     def _showSettings(self) -> None:
         """Show the ZAA settings dialog."""
-        # QML dialog will be loaded here in a future phase.
-        # For now, log the current settings.
-        Logger.log(
-            "i",
-            f"ZAA Settings: enabled={self._enabled}, "
-            f"max_contour={self._max_contour}, "
-            f"resolution={self._resolution}, "
-            f"targets={self._target_types}, "
-            f"collision={self._enable_collision}",
-        )
+        if self._settings_dialog is None:
+            qml_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "ui",
+                "ZAASettings.qml",
+            )
+            self._settings_dialog = CuraApplication.getInstance().createQmlComponent(
+                qml_path, {"manager": self}
+            )
+
+        if self._settings_dialog is not None:
+            self._settings_dialog.show()
+        else:
+            Logger.log("e", "ZAA: Failed to load settings dialog")
 
     def _postProcess(self, output_device) -> None:
         """Main entry point: post-process G-code with Z Anti-Aliasing."""
