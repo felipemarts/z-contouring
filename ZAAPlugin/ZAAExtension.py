@@ -32,7 +32,7 @@ class ZAAExtension(QObject, Extension):
         self._enabled: bool = True
         self._max_contour: float = 0.0  # 0 = auto (0.5 * layer_height)
         self._resolution: float = 0.5  # mm
-        self._target_types: set[str] = {"TOP-SURFACE-SKIN"}
+        self._target_types: set[str] = {"TOP-SURFACE-SKIN", "SKIN"}
         self._enable_collision: bool = True
         self._nozzle_diameter: float = 0.4
 
@@ -51,7 +51,7 @@ class ZAAExtension(QObject, Extension):
         prefs.addPreference("zaa/enabled", True)
         prefs.addPreference("zaa/max_contour", 0.0)
         prefs.addPreference("zaa/resolution", 0.5)
-        prefs.addPreference("zaa/target_types", "TOP-SURFACE-SKIN")
+        prefs.addPreference("zaa/target_types", "TOP-SURFACE-SKIN,SKIN")
         prefs.addPreference("zaa/enable_collision", True)
 
         self._loadPreferences()
@@ -86,10 +86,11 @@ class ZAAExtension(QObject, Extension):
 
     def _postProcess(self, output_device) -> None:
         """Main entry point: post-process G-code with Z Anti-Aliasing."""
+        Logger.log("i", "ZAA: writeStarted signal received")
         self._loadPreferences()
 
         if not self._enabled:
-            Logger.log("d", "ZAA: Disabled, skipping")
+            Logger.log("i", "ZAA: Disabled, skipping")
             return
 
         # Get G-code from scene
