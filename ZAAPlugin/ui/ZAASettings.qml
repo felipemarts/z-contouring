@@ -49,25 +49,6 @@ UM.Dialog
 
             UM.Label
             {
-                text: "Max contour depth (mm):"
-            }
-            Cura.TextField
-            {
-                id: maxContourField
-                Layout.preferredWidth: 100
-                text: preferences.getValue("zaa/max_contour")
-                validator: RegularExpressionValidator { regularExpression: /[0-9]*(\.[0-9]+)?/ }
-            }
-
-            UM.Label
-            {
-                text: "0 = auto (half of layer height)"
-                font.italic: true
-                Layout.columnSpan: 2
-            }
-
-            UM.Label
-            {
                 text: "Resolution (mm):"
             }
             Cura.TextField
@@ -144,7 +125,6 @@ UM.Dialog
     onAccepted:
     {
         preferences.setValue("zaa/enabled", enabledCheckbox.checked)
-        preferences.setValue("zaa/max_contour", parseFloat(maxContourField.text) || 0)
         preferences.setValue("zaa/resolution", parseFloat(resolutionField.text) || 0.5)
         preferences.setValue("zaa/enable_collision", collisionCheckbox.checked)
 

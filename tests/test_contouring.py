@@ -34,13 +34,16 @@ def _make_flat_surface(z: float = 10.0, extent: float = 100.0):
 
 
 def _make_sloped_surface():
-    """Surface that slopes: z = 10 - 0.2*x, for x=[0,50], y=[0,50]."""
+    """Surface that slopes gently: z = 10 - 0.005*x, for x=[0,50], y=[0,50].
+
+    Over 15mm (x=5 to x=20), Z drops from 9.975 to 9.9 — within max_contour=0.1.
+    """
     vertices = np.array(
         [
             [0.0, 0.0, 10.0],
-            [50.0, 0.0, 0.0],
+            [50.0, 0.0, 9.75],
             [0.0, 50.0, 10.0],
-            [50.0, 50.0, 0.0],
+            [50.0, 50.0, 9.75],
         ],
         dtype=np.float64,
     )
@@ -198,8 +201,18 @@ class TestApplyZAA:
             resolution=1.0,
             target_types={"TOP-SURFACE-SKIN"},
         )
-        # The second chunk should have been modified (contains contoured moves)
-        assert "ZAA_RESET" in gcode_list[1]
+        # The second chunk should have been modified (contains contoured Z values)
+        assert gcode_list[1] != (
+            ";LAYER:10\n"
+            "G0 Z10.0\n"
+            ";TYPE:TOP-SURFACE-SKIN\n"
+            "G1 X5.0 Y25.0 E0.1\n"
+            "G1 X20.0 Y25.0 E1.0\n"
+            ";TYPE:FILL\n"
+            "G1 X30.0 Y25.0 E1.0\n"
+        )
+        # Should contain Z values different from nominal (10.0)
+        assert "Z9.9" in gcode_list[1]
 
     def test_does_not_modify_fill(self):
         """apply_zaa should NOT modify FILL regions."""

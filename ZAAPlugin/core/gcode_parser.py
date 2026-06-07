@@ -103,6 +103,7 @@ class GCodeState:
         self.current_type: str = ""
         self.layer_number: int = -1
         self.relative_extrusion: bool = False
+        self._layer_z_pending: bool = False
 
     def update(self, line: str) -> str | None:
         """Update state from a G-code line.
@@ -116,12 +117,13 @@ class GCodeState:
             self.current_type = stripped[6:]
             return self.current_type
 
-        # Detect LAYER markers
+        # Detect LAYER markers — next Z value becomes nominal_z
         if stripped.startswith(";LAYER:"):
             try:
                 self.layer_number = int(stripped[7:])
             except ValueError:
                 pass
+            self._layer_z_pending = True
             return None
 
         # Detect extrusion mode
@@ -141,9 +143,10 @@ class GCodeState:
                 self.y = parsed.y
             if parsed.z is not None:
                 self.z = parsed.z
-                # Z-only moves (no XY) set the nominal layer Z
-                if parsed.x is None and parsed.y is None:
+                # First Z after a ;LAYER: marker sets the nominal layer Z
+                if self._layer_z_pending:
                     self.nominal_z = parsed.z
+                    self._layer_z_pending = False
             if parsed.e is not None:
                 if self.relative_extrusion:
                     self.e += parsed.e

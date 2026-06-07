@@ -83,6 +83,23 @@ def compute_contoured_moves(
                     points[i, 0], points[i, 1], z_clamped
                 )
 
+    # Skip contouring if Z doesn't vary along the segment AND is at the
+    # max_contour limit. This catches lateral wall segments where all sub-points
+    # hit the same low Z on a nearby surface — contouring them would drag
+    # the entire wall down to a constant wrong Z.
+    # We allow uniform-Z contouring when the Z is between nominal and
+    # nominal - max_contour (the surface is genuinely flat but lower).
+    z_min = z_values.min()
+    z_max = z_values.max()
+    all_at_floor = abs(z_min - (nominal_z - max_contour)) < 0.001
+    if z_max - z_min < 0.001 and all_at_floor:
+        # All points clamped to max_contour floor — likely a lateral wall
+        # passing over a lower surface. Don't contour.
+        move = GCodeMove(command="G1", x=x1, y=y1, z=nominal_z, e=e_total)
+        if feedrate is not None:
+            move.f = feedrate
+        return [move]
+
     # Compute per-sub-segment distances for E distribution
     deltas = np.diff(points, axis=0)  # (N, 2)
     seg_lengths = np.sqrt(deltas[:, 0] ** 2 + deltas[:, 1] ** 2)
@@ -186,12 +203,13 @@ def apply_zaa(
         lines = chunk.split("\n")
         new_lines: list[str] = []
         modified = False
+        pending_reset_z: float | None = None  # deferred ZAA_RESET
 
         for line in lines:
             stripped = line.strip()
 
-            # Save pre-move position before state update
-            prev_x, prev_y = state.x, state.y
+            # Save pre-move state before update
+            prev_x, prev_y, prev_e = state.x, state.y, state.e
 
             # Detect type and layer changes
             type_change = state.update(stripped)
@@ -223,18 +241,24 @@ def apply_zaa(
                 move_x = parsed.x if parsed.x is not None else prev_x
                 move_y = parsed.y if parsed.y is not None else prev_y
 
-                # Skip near-zero-length moves
+                # Skip near-zero-length moves (still in target region, no reset)
                 dist = math.hypot(move_x - start_x, move_y - start_y)
                 if dist < 0.01:
                     new_lines.append(line)
                     continue
+
+                # Compute E increment (relative amount for this segment)
+                if state.relative_extrusion:
+                    e_increment = parsed.e
+                else:
+                    e_increment = parsed.e - prev_e
 
                 contoured = compute_contoured_moves(
                     x0=start_x,
                     y0=start_y,
                     x1=move_x,
                     y1=move_y,
-                    e_total=parsed.e,
+                    e_total=e_increment,
                     nominal_z=state.nominal_z,
                     layer_height=layer_height,
                     max_contour=max_contour,
@@ -251,17 +275,66 @@ def apply_zaa(
                 )
 
                 if any_contour:
+                    # Drop pending reset — we're continuing contoured moves
+                    pending_reset_z = None
+
+                    # Convert relative E values back to absolute if needed
+                    if not state.relative_extrusion:
+                        e_accum = prev_e
+                        for m in contoured:
+                            if m.e is not None:
+                                e_accum += m.e
+                                m.e = e_accum
+
                     for m in contoured:
                         new_lines.append(format_move(m))
-                    # Add Z reset after contoured section returns to nominal
-                    new_lines.append(
-                        f"G1 Z{state.nominal_z:.4f} ;ZAA_RESET"
-                    )
+                    # Defer the Z reset
+                    pending_reset_z = state.nominal_z
                     modified = True
                 else:
+                    # Target region but this segment didn't contour.
+                    # If we have a pending reset, this segment will extrude
+                    # at the wrong Z (no Z in original line). Must reset.
+                    if pending_reset_z is not None:
+                        new_lines.append(
+                            f"G1 Z{pending_reset_z:.4f} ;ZAA_RESET"
+                        )
+                        pending_reset_z = None
+                        modified = True
                     new_lines.append(line)
             else:
+                # Non-target line: check if we need to reset Z
+                if pending_reset_z is not None:
+                    # Only reset Z before moves that don't set their own Z,
+                    # and skip reset before travels (G0) which are safe at any Z
+                    next_parsed = parse_line(stripped)
+                    is_travel = (
+                        isinstance(next_parsed, GCodeMove)
+                        and next_parsed.command == "G0"
+                    )
+                    has_z = (
+                        isinstance(next_parsed, GCodeMove)
+                        and next_parsed.z is not None
+                    )
+                    is_extrusion_without_z = (
+                        isinstance(next_parsed, GCodeMove)
+                        and next_parsed.command == "G1"
+                        and next_parsed.e is not None
+                        and next_parsed.z is None
+                    )
+
+                    if is_extrusion_without_z:
+                        # Extruding at wrong Z — must reset
+                        new_lines.append(
+                            f"G1 Z{pending_reset_z:.4f} ;ZAA_RESET"
+                        )
+                    # For travels, Z moves, type changes, etc — no reset needed
+
+                    pending_reset_z = None
                 new_lines.append(line)
+
+        # End of chunk: only reset if there's pending and last line matters
+        pending_reset_z = None
 
         if modified:
             gcode_list[chunk_idx] = "\n".join(new_lines)

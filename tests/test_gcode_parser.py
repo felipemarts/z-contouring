@@ -123,19 +123,38 @@ class TestGCodeState:
         assert state.z == 0.3
         assert state.e == 1.0
 
-    def test_nominal_z_on_z_only_move(self):
+    def test_nominal_z_set_after_layer_marker(self):
         state = GCodeState()
+        state.update(";LAYER:0")
+        state.update("G0 F3600 X50 Y50 Z0.3")
+        assert state.nominal_z == 0.3
+        assert state.z == 0.3
+
+    def test_nominal_z_from_layer_with_xyz_move(self):
+        state = GCodeState()
+        state.update(";LAYER:0")
+        state.update("G0 X10 Y20 Z0.6")
+        # First Z after LAYER marker sets nominal_z even with XY
+        assert state.nominal_z == 0.6
+
+    def test_nominal_z_not_updated_without_layer_marker(self):
+        state = GCodeState()
+        state.update(";LAYER:0")
         state.update("G0 Z0.6")
         assert state.nominal_z == 0.6
-        assert state.z == 0.6
-
-    def test_nominal_z_not_set_on_xy_move(self):
-        state = GCodeState()
-        state.update("G0 Z0.6")
         state.update("G1 X10 Y20 Z0.7 E0.5")
-        # Z changed but XY also moved — nominal_z should stay at 0.6
+        # No new LAYER marker — nominal_z should stay at 0.6
         assert state.nominal_z == 0.6
         assert state.z == 0.7
+
+    def test_nominal_z_updates_on_new_layer(self):
+        state = GCodeState()
+        state.update(";LAYER:0")
+        state.update("G0 Z0.3")
+        assert state.nominal_z == 0.3
+        state.update(";LAYER:1")
+        state.update("G0 X50 Y50 Z0.6")
+        assert state.nominal_z == 0.6
 
     def test_extrusion_mode_absolute(self):
         state = GCodeState()

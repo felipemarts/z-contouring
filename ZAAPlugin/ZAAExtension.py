@@ -30,11 +30,9 @@ class ZAAExtension(QObject, Extension):
 
         # Default settings
         self._enabled: bool = True
-        self._max_contour: float = 0.0  # 0 = auto (0.5 * layer_height)
         self._resolution: float = 0.5  # mm
-        self._target_types: set[str] = {"TOP-SURFACE-SKIN", "SKIN"}
+        self._target_types: set[str] = {"TOP-SURFACE-SKIN", "SKIN", "WALL-OUTER"}
         self._enable_collision: bool = True
-        self._nozzle_diameter: float = 0.4
 
         # Register preferences
         self._initPreferences()
@@ -49,9 +47,8 @@ class ZAAExtension(QObject, Extension):
         """Register plugin preferences with Cura."""
         prefs = CuraApplication.getInstance().getPreferences()
         prefs.addPreference("zaa/enabled", True)
-        prefs.addPreference("zaa/max_contour", 0.0)
         prefs.addPreference("zaa/resolution", 0.5)
-        prefs.addPreference("zaa/target_types", "TOP-SURFACE-SKIN,SKIN")
+        prefs.addPreference("zaa/target_types", "TOP-SURFACE-SKIN,SKIN,WALL-OUTER")
         prefs.addPreference("zaa/enable_collision", True)
 
         self._loadPreferences()
@@ -60,7 +57,6 @@ class ZAAExtension(QObject, Extension):
         """Load current preference values."""
         prefs = CuraApplication.getInstance().getPreferences()
         self._enabled = bool(prefs.getValue("zaa/enabled"))
-        self._max_contour = float(prefs.getValue("zaa/max_contour"))
         self._resolution = float(prefs.getValue("zaa/resolution"))
         self._enable_collision = bool(prefs.getValue("zaa/enable_collision"))
 
@@ -155,9 +151,7 @@ class ZAAExtension(QObject, Extension):
         global_stack = CuraApplication.getInstance().getGlobalContainerStack()
         layer_height = float(global_stack.getProperty("layer_height", "value"))
 
-        max_contour = self._max_contour
-        if max_contour <= 0:
-            max_contour = 0.5 * layer_height
+        max_contour = layer_height
 
         Logger.log(
             "d",
