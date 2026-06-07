@@ -3,7 +3,8 @@
     "author": "Felipe Martins",
     "version": "0.1.0",
     "description": "Non-planar Z contouring for smoother top surfaces on curved and sloped geometry.",
+    "minimum_cura_version": "5.0",
     "api": 8,
-    "supported_sdk_versions": [8],
+    "supported_sdk_versions": ["8.0.0", "8.1.0", "8.2.0", "8.3.0", "8.4.0", "8.5.0", "8.6.0", "8.7.0", "8.8.0", "8.9.0", "8.10.0"],
     "i18n-catalog": "zaa"
 }
