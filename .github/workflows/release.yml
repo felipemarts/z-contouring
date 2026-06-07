@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install numpy pytest
+
+      - name: Run tests
+        run: pytest tests/test_gcode_parser.py tests/test_ray_caster.py tests/test_contouring.py tests/test_collision.py -v
+
+      - name: Run offline integration test
+        run: python tests/test_offline.py
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Package plugin
+        run: |
+          mkdir -p dist
+          cd ZAAPlugin
+          zip -r ../dist/ZAAPlugin.zip . -x '__pycache__/*' '*.pyc'
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "ZAA Plugin v${{ steps.version.outputs.version }}"
+          body: |
+            ## Installation
+
+            1. Download `ZAAPlugin.zip` below
+            2. Extract into your Cura plugins directory:
+               - **Windows:** `%APPDATA%\cura\5.x\plugins\`
+               - **macOS:** `~/Library/Application Support/cura/5.x/plugins/`
+               - **Linux:** `~/.local/share/cura/5.x/plugins/`
+            3. Restart Cura
+
+            The plugin appears under **Extensions > Z Anti-Aliasing**.
+          files: dist/ZAAPlugin.zip
+          generate_release_notes: true
