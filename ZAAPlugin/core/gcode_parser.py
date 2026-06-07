@@ -117,12 +117,17 @@ class GCodeState:
             self.current_type = stripped[6:]
             return self.current_type
 
-        # Detect LAYER markers — next Z value becomes nominal_z
+        # Detect LAYER markers — use the current Z as nominal_z.
+        # The Z is typically set by a travel move BEFORE the LAYER marker.
+        # If a Z move appears after the marker, it overrides.
         if stripped.startswith(";LAYER:"):
             try:
                 self.layer_number = int(stripped[7:])
             except ValueError:
                 pass
+            # Use current Z as nominal (set by travel before LAYER marker)
+            if self.z > 0:
+                self.nominal_z = self.z
             self._layer_z_pending = True
             return None
 
