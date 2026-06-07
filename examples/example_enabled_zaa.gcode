@@ -9,7 +9,6 @@
 ;MAXY:118
 ;MAXZ:3.9
 ;TARGET_MACHINE.NAME:Unknown
-;ZAA_APPLIED
 ;Generated with Cura_SteamEngine 5.12.0
 M104 S200
 M105
