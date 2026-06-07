@@ -73,15 +73,50 @@ def compute_contoured_moves(
     z_values = np.full(n_points, nominal_z)
     hit_z = caster.hit_z_batch(points)
 
+    # Z range for contouring: allow Z to follow the surface within
+    # one layer_height above and below the nominal Z.
+    # The floor is the midpoint between this layer and the previous one —
+    # never descend into the previous layer's territory.
+    z_floor = nominal_z - max_contour * 0.5
+    z_ceiling = nominal_z + max_contour
+
     for i in range(n_points):
         if not np.isnan(hit_z[i]):
-            z_clamped = max(nominal_z - max_contour, min(hit_z[i], nominal_z))
-            z_values[i] = z_clamped
+            # Only contour if the surface is within range of this layer.
+            # If the surface is far above or below, it's not the relevant
+            # surface for this layer (e.g., bottom skin, internal layer).
+            if hit_z[i] < z_floor or hit_z[i] > z_ceiling:
+                # Surface too far from this layer — keep nominal
+                z_values[i] = nominal_z
+            else:
+                z_values[i] = hit_z[i]
 
             if collision_checker is not None:
                 z_values[i] = collision_checker.check_safe_z(
-                    points[i, 0], points[i, 1], z_clamped
+                    points[i, 0], points[i, 1], z_values[i]
                 )
+
+    # Smooth the Z profile: only modify points that were actually contoured
+    # (not nominal). Points at nominal_z have layers above and must stay flat.
+    contoured_mask = np.array([
+        abs(z_values[i] - nominal_z) > 0.001 for i in range(n_points)
+    ])
+    contoured_indices = np.where(contoured_mask)[0]
+
+    if len(contoured_indices) >= 2:
+        # Interpolate smoothly only among contoured points
+        first_c = contoured_indices[0]
+        last_c = contoured_indices[-1]
+        z_start = z_values[first_c]
+        z_end = z_values[last_c]
+        if abs(z_end - z_start) > 0.001:
+            for idx in contoured_indices:
+                t = (idx - first_c) / (last_c - first_c)
+                z_smooth = z_start + t * (z_end - z_start)
+                if z_end < z_start:
+                    z_values[idx] = min(z_values[idx], z_smooth)
+                else:
+                    z_values[idx] = max(z_values[idx], z_smooth)
 
     # Skip contouring if Z doesn't vary along the segment AND is at the
     # max_contour limit. This catches lateral wall segments where all sub-points
@@ -123,8 +158,9 @@ def compute_contoured_moves(
         delta_z = nominal_z - z_values[i]
         local_layer_height = layer_height - delta_z
 
-        # Clamp to avoid zero/negative flow
+        # Clamp to avoid zero/negative or excessively high flow
         local_layer_height = max(local_layer_height, layer_height * 0.1)
+        local_layer_height = min(local_layer_height, layer_height * 2.0)
 
         flow_factor = local_layer_height / layer_height
         e_sub = e_total * fraction * flow_factor
@@ -232,6 +268,7 @@ def apply_zaa(
                 and parsed.e > 0
                 and state.current_type in target_types
                 and state.nominal_z > 0
+                and state.layer_number > 0  # skip first layer (bed adhesion)
             )
 
             if is_target_move:
