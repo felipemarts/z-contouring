@@ -158,9 +158,10 @@ def compute_contoured_moves(
         delta_z = nominal_z - z_values[i]
         local_layer_height = layer_height - delta_z
 
-        # Clamp to avoid zero/negative or excessively high flow
-        local_layer_height = max(local_layer_height, layer_height * 0.1)
-        local_layer_height = min(local_layer_height, layer_height * 2.0)
+        # Clamp to avoid zero/negative or excessively high flow.
+        # GCodeZAA limits d to +/- height/2, giving a ratio range of [0.5, 1.5].
+        local_layer_height = max(local_layer_height, layer_height * 0.5)
+        local_layer_height = min(local_layer_height, layer_height * 1.5)
 
         flow_factor = local_layer_height / layer_height
         e_sub = e_total * fraction * flow_factor
