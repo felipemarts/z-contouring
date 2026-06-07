@@ -147,16 +147,6 @@ class ZAAExtension(QObject, Extension):
 
         caster = RayCaster(vertices, indices, cell_size=2.0)
 
-        # Debug: save transformed mesh for offline testing
-        try:
-            import numpy as np
-            dump_dir = r"C:\Users\Felipe\Documents\3D\z-contouring\examples"
-            np.save(os.path.join(dump_dir, "mesh_vertices.npy"), vertices)
-            np.save(os.path.join(dump_dir, "mesh_indices.npy"), indices)
-            Logger.log("i", f"ZAA: Saved mesh dump to {dump_dir}")
-        except Exception:
-            Logger.logException("w", "ZAA: Failed to save mesh dump")
-
         # Step 3: Determine layer height and max contour
         global_stack = CuraApplication.getInstance().getGlobalContainerStack()
         layer_height = float(global_stack.getProperty("layer_height", "value"))

@@ -30,3 +30,6 @@ Desktop.ini
 
 # Cura packaging
 *.curapackage
+
+# Debug mesh dumps
+*.npy
