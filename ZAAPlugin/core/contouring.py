@@ -322,6 +322,9 @@ def apply_zaa(
                             if m.e is not None:
                                 e_accum += m.e
                                 m.e = e_accum
+                        # Sync state.e with the actual E we emitted,
+                        # so the next segment's prev_e is correct.
+                        state.e = e_accum
 
                     for m in contoured:
                         new_lines.append(format_move(m))
