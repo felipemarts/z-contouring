@@ -4,6 +4,26 @@ A Cura 5.x Extension plugin that reduces stair-stepping on curved top surfaces b
 
 Unlike external tools that require manual STL export, this plugin accesses the 3D mesh directly from Cura's scene -- no extra steps needed.
 
+Inspired by [GCodeZAA](https://github.com/Theaninova/GCodeZAA).
+
+## Results
+
+### Normal vs ZAA (G-code preview)
+
+![Normal vs ZAA — roof and side](images/benchy_roof_side.jpg)
+
+![Normal vs ZAA — side view](images/benchy_side.jpg)
+
+### Real prints
+
+| | |
+|:---:|:---:|
+| ![Benchy printed with ZAA](images/benchy.png) | ![Map surface comparison](images/map.png) |
+
+### G-code detail
+
+![G-code preview with ZAA applied](images/GZAA.png)
+
 ## How It Works
 
 1. After slicing, the plugin intercepts the G-code before it is saved/sent
