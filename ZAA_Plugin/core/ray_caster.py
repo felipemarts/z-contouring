@@ -75,10 +75,12 @@ class RayCaster:
         iy = int(np.floor((y - self._grid_origin[1]) / self.cell_size))
         return ix, iy
 
-    def hit_z(self, x: float, y: float) -> float | None:
+    def hit_z(self, x: float, y: float) -> tuple[float, float] | None:
         """Cast a vertical ray downward at (x, y) and return the highest Z hit.
 
-        Returns None if no triangle is hit.
+        Returns (hit_z, normal_z) tuple, or None if no triangle is hit.
+        normal_z is the Z component of the unit normal of the hit triangle
+        (1.0 = flat horizontal top surface, 0.0 = vertical wall).
         """
         cell = self._xy_to_cell(x, y)
         candidates = self._grid.get(cell)
@@ -88,16 +90,18 @@ class RayCaster:
         candidate_indices = np.array(candidates, dtype=np.int64)
         return self._intersect_vertical(x, y, candidate_indices)
 
-    def hit_z_batch(self, points: np.ndarray) -> np.ndarray:
+    def hit_z_batch(self, points: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """Cast vertical rays for multiple (x, y) points.
 
         Args:
             points: (N, 2) array of (x, y) positions.
 
         Returns:
-            (N,) array of Z values. NaN where no hit occurred.
+            Tuple of (z_values, normal_z_values), each (N,) arrays.
+            NaN where no hit occurred.
         """
-        result = np.full(len(points), np.nan, dtype=np.float64)
+        z_result = np.full(len(points), np.nan, dtype=np.float64)
+        nz_result = np.full(len(points), np.nan, dtype=np.float64)
 
         # Group points by grid cell for batched intersection
         cell_to_point_indices: dict[tuple[int, int], list[int]] = defaultdict(list)
@@ -112,21 +116,25 @@ class RayCaster:
 
             candidate_indices = np.array(candidates, dtype=np.int64)
             for pi in point_indices:
-                z = self._intersect_vertical(
+                hit = self._intersect_vertical(
                     points[pi, 0], points[pi, 1], candidate_indices
                 )
-                if z is not None:
-                    result[pi] = z
+                if hit is not None:
+                    z_result[pi] = hit[0]
+                    nz_result[pi] = hit[1]
 
-        return result
+        return z_result, nz_result
 
     def _intersect_vertical(
         self, x: float, y: float, tri_indices: np.ndarray
-    ) -> float | None:
+    ) -> tuple[float, float] | None:
         """Vectorized Möller-Trumbore for a vertical ray at (x, y).
 
         The ray goes from (x, y, +inf) downward in -Z direction.
         We simplify the general algorithm since direction = (0, 0, -1).
+
+        Returns (hit_z, normal_z) or None.
+        normal_z is the Z component of the unit normal of the hit triangle.
         """
         v0 = self.v0[tri_indices]  # (K, 3)
         v1 = self.v1[tri_indices]
@@ -183,5 +191,14 @@ class RayCaster:
         # Z of hit point = z_origin - t (since ray goes in -Z)
         hit_z_values = z_origin - t[hit_mask]
 
-        # Return highest (closest to ray origin) Z
-        return float(np.max(hit_z_values))
+        # Compute surface normals for hit triangles: cross(e1, e2)
+        hit_e1 = e1[hit_mask]
+        hit_e2 = e2[hit_mask]
+        normals = np.cross(hit_e1, hit_e2)  # (H, 3)
+        norms = np.linalg.norm(normals, axis=1)
+        norms[norms < _EPS] = 1.0  # avoid div-by-zero for degenerate
+        normal_z = normals[:, 2] / norms  # normalized Z component
+
+        # Find the highest Z hit (closest to ray origin)
+        best_idx = int(np.argmax(hit_z_values))
+        return float(hit_z_values[best_idx]), float(normal_z[best_idx])

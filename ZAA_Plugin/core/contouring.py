@@ -48,6 +48,7 @@ def compute_contoured_moves(
     caster: RayCaster,
     collision_checker: CollisionChecker | None = None,
     feedrate: float | None = None,
+    min_normal_z: float = 0.3,
 ) -> list[GCodeMove]:
     """Compute contoured sub-moves for a single extrusion segment.
 
@@ -62,6 +63,9 @@ def compute_contoured_moves(
         caster: RayCaster instance for surface queries.
         collision_checker: Optional collision checker.
         feedrate: Optional feedrate to include on the first sub-move.
+        min_normal_z: Minimum Z component of surface normal to allow
+            contouring. Surfaces steeper than this are treated as walls
+            and kept at nominal Z. Default 0.3 (~72 deg from horizontal).
 
     Returns:
         List of GCodeMove objects representing the contoured path.
@@ -71,7 +75,7 @@ def compute_contoured_moves(
 
     # Batch ray-cast all sub-points (skip the first — it's the previous position)
     z_values = np.full(n_points, nominal_z)
-    hit_z = caster.hit_z_batch(points)
+    hit_z, hit_nz = caster.hit_z_batch(points)
 
     # Z range for contouring: allow Z to follow the surface within
     # one layer_height above and below the nominal Z.
@@ -82,10 +86,14 @@ def compute_contoured_moves(
 
     for i in range(n_points):
         if not np.isnan(hit_z[i]):
+            # Normal check: only contour surfaces that face upward.
+            # Steep walls (nz close to 0) should NOT be contoured.
+            if np.isnan(hit_nz[i]) or abs(hit_nz[i]) < min_normal_z:
+                z_values[i] = nominal_z
             # Only contour if the surface is within range of this layer.
             # If the surface is far above or below, it's not the relevant
             # surface for this layer (e.g., bottom skin, internal layer).
-            if hit_z[i] < z_floor or hit_z[i] > z_ceiling:
+            elif hit_z[i] < z_floor or hit_z[i] > z_ceiling:
                 # Surface too far from this layer — keep nominal
                 z_values[i] = nominal_z
             else:
@@ -118,18 +126,29 @@ def compute_contoured_moves(
                 else:
                     z_values[idx] = max(z_values[idx], z_smooth)
 
-    # Skip contouring if Z doesn't vary along the segment AND is at the
-    # max_contour limit. This catches lateral wall segments where all sub-points
-    # hit the same low Z on a nearby surface — contouring them would drag
-    # the entire wall down to a constant wrong Z.
-    # We allow uniform-Z contouring when the Z is between nominal and
-    # nominal - max_contour (the surface is genuinely flat but lower).
+    # Skip contouring for lateral-wall segments.
+    #
+    # Case 1: All sub-points clamped to the same Z at the max_contour floor
+    # → the segment runs over a distant lower surface.
+    #
+    # Case 2: Z varies more than max_contour along the segment → the segment
+    # runs parallel to a sloped surface (e.g. a side wall of a ramp).
+    # Genuine top-surface contours change Z gradually within one layer_height.
     z_min = z_values.min()
     z_max = z_values.max()
     all_at_floor = abs(z_min - (nominal_z - max_contour)) < 0.001
+    z_span = z_max - z_min
+
     if z_max - z_min < 0.001 and all_at_floor:
-        # All points clamped to max_contour floor — likely a lateral wall
-        # passing over a lower surface. Don't contour.
+        # Case 1: all at floor — keep nominal
+        move = GCodeMove(command="G1", x=x1, y=y1, z=nominal_z, e=e_total)
+        if feedrate is not None:
+            move.f = feedrate
+        return [move]
+
+    if z_span > max_contour:
+        # Case 2: Z varies too much — this segment is running along a slope,
+        # not across a top surface. Keep nominal to avoid slanting side walls.
         move = GCodeMove(command="G1", x=x1, y=y1, z=nominal_z, e=e_total)
         if feedrate is not None:
             move.f = feedrate
@@ -147,24 +166,32 @@ def compute_contoured_moves(
             move.f = feedrate
         return [move]
 
-    # Compute E per sub-segment with flow compensation
-    moves: list[GCodeMove] = []
-    for i in range(1, n_points):
-        fraction = seg_lengths[i - 1] / total_length
-
-        # Local layer height: how much material height at this point
-        # nominal_z is the top of the nominal layer; z_values[i] is where we print
-        # If we drop by delta_z, the local layer height decreases
-        delta_z = nominal_z - z_values[i]
+    # Compute E per sub-segment with flow compensation.
+    # We redistribute E across sub-segments based on local layer height,
+    # but normalize so that the total E equals e_total exactly.
+    # This preserves absolute-E continuity while still adjusting flow
+    # distribution along the contoured path.
+    n_segs = n_points - 1
+    raw_weights = np.empty(n_segs)
+    for i in range(n_segs):
+        fraction = seg_lengths[i] / total_length
+        delta_z = nominal_z - z_values[i + 1]
         local_layer_height = layer_height - delta_z
-
-        # Clamp to avoid zero/negative or excessively high flow.
-        # GCodeZAA limits d to +/- height/2, giving a ratio range of [0.5, 1.5].
         local_layer_height = max(local_layer_height, layer_height * 0.5)
         local_layer_height = min(local_layer_height, layer_height * 1.5)
-
         flow_factor = local_layer_height / layer_height
-        e_sub = e_total * fraction * flow_factor
+        raw_weights[i] = fraction * flow_factor
+
+    # Normalize weights so they sum to 1.0 — total E is preserved
+    weight_sum = raw_weights.sum()
+    if weight_sum > 1e-10:
+        raw_weights /= weight_sum
+    else:
+        raw_weights[:] = 1.0 / n_segs
+
+    moves: list[GCodeMove] = []
+    for i in range(1, n_points):
+        e_sub = e_total * raw_weights[i - 1]
 
         move = GCodeMove(
             command="G1",
@@ -220,6 +247,7 @@ def apply_zaa(
     resolution: float,
     target_types: set[str],
     collision_checker: CollisionChecker | None = None,
+    min_normal_z: float = 0.3,
 ) -> None:
     """Apply Z Anti-Aliasing to a Cura gcode_list in-place.
 
@@ -231,6 +259,7 @@ def apply_zaa(
         resolution: Subdivision spacing (mm).
         target_types: Set of ;TYPE: strings to process (e.g. {"TOP-SURFACE-SKIN"}).
         collision_checker: Optional CollisionChecker instance.
+        min_normal_z: Minimum surface normal Z component for contouring.
     """
     state = GCodeState()
     prev_layer = -1
@@ -304,6 +333,7 @@ def apply_zaa(
                     caster=caster,
                     collision_checker=collision_checker,
                     feedrate=parsed.f,
+                    min_normal_z=min_normal_z,
                 )
 
                 # Check if contouring actually changed anything
@@ -323,8 +353,9 @@ def apply_zaa(
                             if m.e is not None:
                                 e_accum += m.e
                                 m.e = e_accum
-                        # Sync state.e with the actual E we emitted,
-                        # so the next segment's prev_e is correct.
+                        # Sync state.e with the actual E we emitted.
+                        # Since E total is normalized to e_increment,
+                        # e_accum should equal parsed.e (original target).
                         state.e = e_accum
 
                     for m in contoured:
@@ -346,36 +377,29 @@ def apply_zaa(
             else:
                 # Non-target line: check if we need to reset Z
                 if pending_reset_z is not None:
-                    # Only reset Z before moves that don't set their own Z,
-                    # and skip reset before travels (G0) which are safe at any Z
                     next_parsed = parse_line(stripped)
-                    is_travel = (
-                        isinstance(next_parsed, GCodeMove)
-                        and next_parsed.command == "G0"
-                    )
-                    has_z = (
-                        isinstance(next_parsed, GCodeMove)
-                        and next_parsed.z is not None
-                    )
-                    is_extrusion_without_z = (
-                        isinstance(next_parsed, GCodeMove)
-                        and next_parsed.command == "G1"
-                        and next_parsed.e is not None
-                        and next_parsed.z is None
-                    )
+                    is_move = isinstance(next_parsed, GCodeMove)
+                    has_own_z = is_move and next_parsed.z is not None
 
-                    if is_extrusion_without_z:
-                        # Extruding at wrong Z — must reset
+                    if is_move and not has_own_z:
+                        # Any move (G0 or G1) without its own Z inherits
+                        # the contoured Z — must reset before it.
                         new_lines.append(
                             f"G1 Z{pending_reset_z:.4f} ;ZAA_RESET"
                         )
-                    # For travels, Z moves, type changes, etc — no reset needed
+                        pending_reset_z = None
+                    elif is_move and has_own_z:
+                        # Move sets its own Z — no reset needed
+                        pending_reset_z = None
+                    # For non-move lines (comments, ;TYPE:, M-codes),
+                    # keep pending_reset_z alive until next move.
 
-                    pending_reset_z = None
                 new_lines.append(line)
 
-        # End of chunk: only reset if there's pending and last line matters
-        pending_reset_z = None
+        # End of chunk: emit pending reset if still active
+        if pending_reset_z is not None:
+            new_lines.append(f"G1 Z{pending_reset_z:.4f} ;ZAA_RESET")
+            pending_reset_z = None
 
         if modified:
             gcode_list[chunk_idx] = "\n".join(new_lines)

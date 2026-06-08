@@ -6,9 +6,9 @@ import re
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import numpy as np
-from ZAAPlugin.core.ray_caster import RayCaster
-from ZAAPlugin.core.contouring import apply_zaa
-from ZAAPlugin.core.collision import CollisionChecker
+from ZAA_Plugin.core.ray_caster import RayCaster
+from ZAA_Plugin.core.contouring import apply_zaa
+from ZAA_Plugin.core.collision import CollisionChecker
 
 EXAMPLES = os.path.join(os.path.dirname(__file__), "..", "examples")
 
@@ -175,8 +175,12 @@ def main():
     caster = RayCaster(verts, indices, cell_size=2.0)
     print("\nRay cast samples:")
     for x, y in [(50, 100), (98, 100), (130, 100), (145, 100)]:
-        z = caster.hit_z(float(x), float(y))
-        print(f"  hit_z({x}, {y}) = {z}")
+        result = caster.hit_z(float(x), float(y))
+        if result is not None:
+            z, nz = result
+            print(f"  hit_z({x}, {y}) = z={z:.4f}, nz={nz:.4f}")
+        else:
+            print(f"  hit_z({x}, {y}) = None")
 
     # Load disabled gcode
     disabled_text = load_gcode("example_disabled_zaa.gcode")

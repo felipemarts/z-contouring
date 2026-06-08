@@ -50,6 +50,7 @@ class ZAAExtension(QObject, Extension):
         prefs.addPreference("zaa/resolution", 0.5)
         prefs.addPreference("zaa/target_types", "TOP-SURFACE-SKIN,SKIN,WALL-OUTER")
         prefs.addPreference("zaa/enable_collision", True)
+        prefs.addPreference("zaa/min_normal_z", 0.3)
 
         self._loadPreferences()
 
@@ -59,6 +60,7 @@ class ZAAExtension(QObject, Extension):
         self._enabled = bool(prefs.getValue("zaa/enabled"))
         self._resolution = float(prefs.getValue("zaa/resolution"))
         self._enable_collision = bool(prefs.getValue("zaa/enable_collision"))
+        self._min_normal_z = float(prefs.getValue("zaa/min_normal_z"))
 
         types_str = str(prefs.getValue("zaa/target_types"))
         self._target_types = {t.strip() for t in types_str.split(",") if t.strip()}
@@ -176,4 +178,5 @@ class ZAAExtension(QObject, Extension):
             resolution=self._resolution,
             target_types=self._target_types,
             collision_checker=collision_checker,
+            min_normal_z=self._min_normal_z,
         )

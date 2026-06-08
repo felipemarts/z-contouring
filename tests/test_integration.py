@@ -95,8 +95,12 @@ def main():
     # Test a few ray casts
     print("\nRay cast tests:")
     for x, y in [(98.0, 100.0), (50.0, 100.0), (145.0, 100.0), (130.0, 100.0)]:
-        z = caster.hit_z(x, y)
-        print(f"  hit_z({x}, {y}) = {z}")
+        result = caster.hit_z(x, y)
+        if result is not None:
+            z, nz = result
+            print(f"  hit_z({x}, {y}) = z={z:.4f}, nz={nz:.4f}")
+        else:
+            print(f"  hit_z({x}, {y}) = None")
 
     # Load gcode as list (Cura format: one big string per chunk)
     # Cura splits gcode by ";LAYER:" markers but for simplicity use one chunk

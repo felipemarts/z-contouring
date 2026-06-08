@@ -26,17 +26,23 @@ print()
 
 # Subdivide the segment
 points = subdivide_segment(133.996, 110.0, 51.0, 110.0, 0.5)
-hit_z = caster.hit_z_batch(points)
+hit_z, hit_nz = caster.hit_z_batch(points)
 
-print(f"{'X':>8} {'Y':>8} {'hit_z':>8} {'result':>8} {'reason'}")
-print("-" * 60)
+min_normal_z = 0.3
+
+print(f"{'X':>8} {'Y':>8} {'hit_z':>8} {'nz':>6} {'result':>8} {'reason'}")
+print("-" * 70)
 
 for i in range(len(points)):
     x, y = points[i]
     hz = hit_z[i]
+    nz = hit_nz[i]
     if np.isnan(hz):
         result = nominal_z
         reason = "no hit"
+    elif np.isnan(nz) or abs(nz) < min_normal_z:
+        result = nominal_z
+        reason = f"steep wall (nz={nz:.3f})"
     elif hz < z_floor:
         result = nominal_z
         reason = f"below floor ({z_floor})"
@@ -48,11 +54,14 @@ for i in range(len(points)):
         reason = "CONTOURED"
 
     if i < 10 or i > len(points) - 10 or abs(result - nominal_z) > 0.001:
-        print(f"{x:8.2f} {y:8.2f} {hz:8.4f} {result:8.4f} {reason}")
+        print(f"{x:8.2f} {y:8.2f} {hz:8.4f} {nz:6.3f} {result:8.4f} {reason}")
 
 print(f"\n... total {len(points)} points")
 
 # Count how many are contoured vs nominal
 n_contoured = sum(1 for i in range(len(points))
-                  if not np.isnan(hit_z[i]) and z_floor <= hit_z[i] <= z_ceiling)
+                  if not np.isnan(hit_z[i])
+                  and not np.isnan(hit_nz[i])
+                  and abs(hit_nz[i]) >= min_normal_z
+                  and z_floor <= hit_z[i] <= z_ceiling)
 print(f"Contoured: {n_contoured}, Nominal: {len(points) - n_contoured}")

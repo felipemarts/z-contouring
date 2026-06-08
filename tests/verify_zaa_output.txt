@@ -1,0 +1,796 @@
+
+##########################################################################################
+# MODEL: ramp
+# Disabled: example_disabled_zaa.gcode
+# Enabled:  example_enabled_zaa.gcode
+##########################################################################################
+
+Layer height: 0.6mm
+
+Parsing disabled gcode...
+Parsing enabled gcode...
+Total layers: 7
+
+==========================================================================================
+REPORT 1: Types present in disabled gcode
+==========================================================================================
+  ;TYPE:FILL: 3 layers (first=2, last=4)
+  ;TYPE:SKIN: 7 layers (first=0, last=6)
+  ;TYPE:SKIRT: 1 layers (first=0, last=0)
+  ;TYPE:WALL-OUTER: 7 layers (first=0, last=6)
+
+  => TOP-SURFACE-SKIN present: NO
+
+==========================================================================================
+REPORT 2: Per-layer Z changes (enabled vs disabled)
+==========================================================================================
+
+--- Layer 1 (nominal Z=1.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [0.9000, 0.9000] (36 moves)
+    Enabled  Z: [0.7162, 1.4986] (298 moves)
+    Delta: min=-0.1838, max=+0.5986
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [0.9000, 0.9000] (4 moves)
+    Enabled  Z: [0.6402, 0.9000] (4 moves)
+    Delta: min=-0.2598, max=+0.0000
+
+--- Layer 2 (nominal Z=2.1000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [1.5000, 1.5000] (18 moves)
+    Enabled  Z: [1.3162, 2.0973] (281 moves)
+    Delta: min=-0.1838, max=+0.5973
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [1.5000, 1.5000] (5 moves)
+    Enabled  Z: [1.2402, 1.5000] (5 moves)
+    Delta: min=-0.2598, max=+0.0000
+
+--- Layer 3 (nominal Z=2.7000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [2.1000, 2.1000] (18 moves)
+    Enabled  Z: [1.9162, 2.6992] (280 moves)
+    Delta: min=-0.1838, max=+0.5992
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [2.1000, 2.1000] (5 moves)
+    Enabled  Z: [1.8402, 2.1000] (5 moves)
+    Delta: min=-0.2598, max=+0.0000
+
+--- Layer 4 (nominal Z=3.3000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [2.7000, 2.7000] (18 moves)
+    Enabled  Z: [2.5162, 3.2999] (281 moves)
+    Delta: min=-0.1838, max=+0.5999
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [2.7000, 2.7000] (5 moves)
+    Enabled  Z: [2.4402, 2.7000] (5 moves)
+    Delta: min=-0.2598, max=+0.0000
+
+--- Layer 5 (nominal Z=3.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [3.3000, 3.3000] (14 moves)
+    Enabled  Z: [3.1162, 3.8840] (254 moves)
+    Delta: min=-0.1838, max=+0.5840
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [3.3000, 3.3000] (4 moves)
+    Enabled  Z: [3.0402, 3.3000] (4 moves)
+    Delta: min=-0.2598, max=+0.0000
+
+--- Layer 6 (nominal Z=0.0000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [3.9000, 3.9000] (11 moves)
+    Enabled  Z: [3.7162, 3.9000] (57 moves)
+    Delta: min=-0.1838, max=+0.0000
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [3.9000, 3.9000] (4 moves)
+    Enabled  Z: [3.6402, 3.9600] (34 moves)
+    Delta: min=-0.2598, max=+0.0600
+
+==========================================================================================
+REPORT 3: Full layer-by-layer overview
+==========================================================================================
+  Layer   1 | Z= 1.5000 (dz=+1.5000) | CONTOURED  | types: SKIN, WALL-OUTER
+              changes: SKIN[BUG]: Z=[0.7162,1.4986]; WALL-OUTER[BUG]: Z=[0.6402,0.9000]
+  Layer   2 | Z= 2.1000 (dz=+0.6000) | CONTOURED  | types: FILL, SKIN, WALL-OUTER
+              changes: SKIN[BUG]: Z=[1.3162,2.0973]; WALL-OUTER[BUG]: Z=[1.2402,1.5000]
+  Layer   3 | Z= 2.7000 (dz=+0.6000) | CONTOURED  | types: FILL, SKIN, WALL-OUTER
+              changes: SKIN[BUG]: Z=[1.9162,2.6992]; WALL-OUTER[BUG]: Z=[1.8402,2.1000]
+  Layer   4 | Z= 3.3000 (dz=+0.6000) | CONTOURED  | types: FILL, SKIN, WALL-OUTER
+              changes: SKIN[BUG]: Z=[2.5162,3.2999]; WALL-OUTER[BUG]: Z=[2.4402,2.7000]
+  Layer   5 | Z= 3.9000 (dz=+0.6000) | CONTOURED  | types: SKIN, WALL-OUTER
+              changes: SKIN[BUG]: Z=[3.1162,3.8840]; WALL-OUTER[BUG]: Z=[3.0402,3.3000]
+  Layer   6 | Z= 0.0000 (dz=-3.9000) | CONTOURED  | types: SKIN, WALL-OUTER
+              changes: SKIN[BUG]: Z=[3.7162,3.9000]; WALL-OUTER[BUG]: Z=[3.6402,3.9600]
+
+==========================================================================================
+REPORT 4: ZAA_RESET lines
+==========================================================================================
+  Total ZAA_RESET lines: 75
+  Layers with resets: 6
+    Layer 1: 14 resets
+    Layer 2: 14 resets
+    Layer 4: 14 resets
+    Layer 3: 13 resets
+    Layer 5: 13 resets
+    Layer 6: 7 resets
+
+==========================================================================================
+REPORT 5: Z contamination — non-target extrusions at wrong Z
+==========================================================================================
+  Contaminated extrusion moves: 0
+  Layers with contamination: 0
+
+==========================================================================================
+REPORT 6: E (extrusion) continuity check
+==========================================================================================
+  E discontinuities (non-retraction): 0
+
+==========================================================================================
+SUMMARY for ramp
+==========================================================================================
+  Total layers: 7
+  Layer height: 0.6mm
+  TOP-SURFACE-SKIN layers: 0
+  OK contoured layers: 0
+  [BUG] Z-LEAK: 0 layers
+  [BUG] FALSE-CONTOUR: 6 layers
+  [WARN] Collateral: 0 layers
+  Z contaminations: 0 moves
+  E discontinuities: 0
+
+##########################################################################################
+# MODEL: benchy
+# Disabled: 3DBenchy_disabled.gcode
+# Enabled:  3DBenchy_enabled.gcode
+##########################################################################################
+
+Layer height: 0.2mm
+
+Parsing disabled gcode...
+Parsing enabled gcode...
+Total layers: 239
+
+==========================================================================================
+REPORT 1: Types present in disabled gcode
+==========================================================================================
+  ;TYPE:FILL: 192 layers (first=4, last=195)
+  ;TYPE:SKIN: 164 layers (first=0, last=199)
+  ;TYPE:SKIRT: 3 layers (first=0, last=2)
+  ;TYPE:WALL-INNER: 239 layers (first=0, last=238)
+  ;TYPE:WALL-OUTER: 239 layers (first=0, last=238)
+
+  => TOP-SURFACE-SKIN present: NO
+
+==========================================================================================
+REPORT 2: Per-layer Z changes (enabled vs disabled)
+==========================================================================================
+
+--- Layer 40 (nominal Z=8.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [8.3000, 8.3000] (249 moves)
+    Enabled  Z: [8.3000, 8.5000] (534 moves)
+    Delta: min=+0.0000, max=+0.2000
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [8.3000, 8.3000] (110 moves)
+    Enabled  Z: [8.3000, 8.5000] (110 moves)
+    Delta: min=+0.0000, max=+0.2000
+
+--- Layer 41 (nominal Z=8.7000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [8.5000, 8.5000] (250 moves)
+    Enabled  Z: [8.5000, 8.6991] (578 moves)
+    Delta: min=+0.0000, max=+0.1991
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [8.5000, 8.5000] (112 moves)
+    Enabled  Z: [8.5000, 8.5077] (112 moves)
+    Delta: min=+0.0000, max=+0.0077
+
+--- Layer 42 (nominal Z=8.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [8.7000, 8.7000] (208 moves)
+    Enabled  Z: [8.6004, 8.8856] (279 moves)
+    Delta: min=-0.0996, max=+0.1856
+
+--- Layer 43 (nominal Z=9.1000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [8.9000, 8.9000] (211 moves)
+    Enabled  Z: [8.8001, 9.0655] (261 moves)
+    Delta: min=-0.0999, max=+0.1655
+
+--- Layer 44 (nominal Z=9.3000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [9.1000, 9.1000] (235 moves)
+    Enabled  Z: [9.0003, 9.2605] (310 moves)
+    Delta: min=-0.0997, max=+0.1605
+
+--- Layer 45 (nominal Z=9.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [9.3000, 9.3000] (232 moves)
+    Enabled  Z: [9.2015, 9.4812] (234 moves)
+    Delta: min=-0.0985, max=+0.1812
+
+--- Layer 46 (nominal Z=9.7000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [9.5000, 9.5000] (234 moves)
+    Enabled  Z: [9.4002, 9.6647] (251 moves)
+    Delta: min=-0.0998, max=+0.1647
+
+--- Layer 47 (nominal Z=9.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [9.7000, 9.7000] (237 moves)
+    Enabled  Z: [9.7000, 9.8633] (239 moves)
+    Delta: min=+0.0000, max=+0.1633
+
+--- Layer 48 (nominal Z=10.1000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [9.9000, 9.9000] (242 moves)
+    Enabled  Z: [9.8161, 10.0669] (248 moves)
+    Delta: min=-0.0839, max=+0.1669
+
+--- Layer 49 (nominal Z=10.3000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [10.1000, 10.1000] (247 moves)
+    Enabled  Z: [10.0181, 10.2802] (253 moves)
+    Delta: min=-0.0819, max=+0.1802
+
+--- Layer 50 (nominal Z=10.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [10.3000, 10.3000] (34 moves)
+    Enabled  Z: [10.3000, 10.4663] (34 moves)
+    Delta: min=+0.0000, max=+0.1663
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [10.3000, 10.3000] (249 moves)
+    Enabled  Z: [10.2002, 10.4850] (266 moves)
+    Delta: min=-0.0998, max=+0.1850
+
+--- Layer 51 (nominal Z=10.7000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [10.5000, 10.5000] (25 moves)
+    Enabled  Z: [10.5000, 10.6935] (47 moves)
+    Delta: min=+0.0000, max=+0.1935
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [10.5000, 10.5000] (248 moves)
+    Enabled  Z: [10.5000, 10.6985] (279 moves)
+    Delta: min=+0.0000, max=+0.1985
+
+--- Layer 52 (nominal Z=10.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [10.7000, 10.7000] (18 moves)
+    Enabled  Z: [10.6259, 10.7000] (18 moves)
+    Delta: min=-0.0741, max=+0.0000
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [10.7000, 10.7000] (261 moves)
+    Enabled  Z: [10.6004, 10.8780] (325 moves)
+    Delta: min=-0.0996, max=+0.1780
+
+--- Layer 53 (nominal Z=11.1000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [10.9000, 10.9000] (239 moves)
+    Enabled  Z: [10.8046, 11.0828] (253 moves)
+    Delta: min=-0.0954, max=+0.1828
+
+--- Layer 54 (nominal Z=11.3000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [11.1000, 11.1000] (238 moves)
+    Enabled  Z: [11.0286, 11.2827] (246 moves)
+    Delta: min=-0.0714, max=+0.1827
+
+--- Layer 55 (nominal Z=11.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [11.3000, 11.3000] (239 moves)
+    Enabled  Z: [11.2054, 11.4968] (252 moves)
+    Delta: min=-0.0946, max=+0.1968
+
+--- Layer 56 (nominal Z=11.7000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [11.5000, 11.5000] (229 moves)
+    Enabled  Z: [11.4014, 11.6741] (251 moves)
+    Delta: min=-0.0986, max=+0.1741
+
+--- Layer 57 (nominal Z=11.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [11.7000, 11.7000] (234 moves)
+    Enabled  Z: [11.7000, 11.8332] (235 moves)
+    Delta: min=+0.0000, max=+0.1332
+
+--- Layer 58 (nominal Z=12.1000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [11.9000, 11.9000] (237 moves)
+    Enabled  Z: [11.9000, 12.0246] (238 moves)
+    Delta: min=+0.0000, max=+0.1246
+
+--- Layer 59 (nominal Z=12.3000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [12.1000, 12.1000] (226 moves)
+    Enabled  Z: [12.1000, 12.2235] (227 moves)
+    Delta: min=+0.0000, max=+0.1235
+
+--- Layer 60 (nominal Z=12.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [12.3000, 12.3000] (224 moves)
+    Enabled  Z: [12.3000, 12.4576] (225 moves)
+    Delta: min=+0.0000, max=+0.1576
+
+--- Layer 61 (nominal Z=12.7000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [12.5000, 12.5000] (210 moves)
+    Enabled  Z: [12.5000, 12.6863] (211 moves)
+    Delta: min=+0.0000, max=+0.1863
+
+--- Layer 62 (nominal Z=12.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [12.7000, 12.7000] (206 moves)
+    Enabled  Z: [12.7000, 12.8788] (207 moves)
+    Delta: min=+0.0000, max=+0.1788
+
+--- Layer 75 (nominal Z=15.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [15.3000, 15.3000] (117 moves)
+    Enabled  Z: [15.3000, 15.5000] (120 moves)
+    Delta: min=+0.0000, max=+0.2000
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [15.3000, 15.3000] (175 moves)
+    Enabled  Z: [15.3000, 15.5000] (181 moves)
+    Delta: min=+0.0000, max=+0.2000
+
+--- Layer 183 (nominal Z=37.1000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [36.9000, 36.9000] (85 moves)
+    Enabled  Z: [36.9000, 37.0000] (95 moves)
+    Delta: min=+0.0000, max=+0.1000
+
+--- Layer 184 (nominal Z=37.3000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [37.1000, 37.1000] (118 moves)
+    Enabled  Z: [37.0000, 37.1000] (121 moves)
+    Delta: min=-0.1000, max=+0.0000
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [37.1000, 37.1000] (58 moves)
+    Enabled  Z: [37.0000, 37.1000] (58 moves)
+    Delta: min=-0.1000, max=+0.0000
+
+--- Layer 190 (nominal Z=38.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [38.3000, 38.3000] (95 moves)
+    Enabled  Z: [38.3000, 38.4938] (105 moves)
+    Delta: min=+0.0000, max=+0.1938
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [38.3000, 38.3000] (50 moves)
+    Enabled  Z: [38.3000, 38.4743] (55 moves)
+    Delta: min=+0.0000, max=+0.1743
+
+--- Layer 191 (nominal Z=38.7000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [38.5000, 38.5000] (75 moves)
+    Enabled  Z: [38.5000, 38.6943] (85 moves)
+    Delta: min=+0.0000, max=+0.1943
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [38.5000, 38.5000] (58 moves)
+    Enabled  Z: [38.5000, 38.6761] (62 moves)
+    Delta: min=+0.0000, max=+0.1761
+
+--- Layer 192 (nominal Z=38.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [38.7000, 38.7000] (67 moves)
+    Enabled  Z: [38.7000, 38.8940] (77 moves)
+    Delta: min=+0.0000, max=+0.1940
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [38.7000, 38.7000] (66 moves)
+    Enabled  Z: [38.7000, 38.8975] (70 moves)
+    Delta: min=+0.0000, max=+0.1975
+
+--- Layer 193 (nominal Z=39.1000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [38.9000, 38.9000] (65 moves)
+    Enabled  Z: [38.9000, 39.0942] (88 moves)
+    Delta: min=+0.0000, max=+0.1942
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [38.9000, 38.9000] (75 moves)
+    Enabled  Z: [38.8330, 39.0967] (84 moves)
+    Delta: min=-0.0670, max=+0.1967
+
+--- Layer 194 (nominal Z=39.3000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [39.1000, 39.1000] (61 moves)
+    Enabled  Z: [39.1000, 39.2945] (76 moves)
+    Delta: min=+0.0000, max=+0.1945
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [39.1000, 39.1000] (81 moves)
+    Enabled  Z: [39.0019, 39.2928] (88 moves)
+    Delta: min=-0.0981, max=+0.1928
+
+--- Layer 195 (nominal Z=39.5000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [39.3000, 39.3000] (55 moves)
+    Enabled  Z: [39.3000, 39.4943] (70 moves)
+    Delta: min=+0.0000, max=+0.1943
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [39.3000, 39.3000] (79 moves)
+    Enabled  Z: [39.3000, 39.4837] (82 moves)
+    Delta: min=+0.0000, max=+0.1837
+
+--- Layer 196 (nominal Z=39.7000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [39.5000, 39.5000] (58 moves)
+    Enabled  Z: [39.5000, 39.6947] (73 moves)
+    Delta: min=+0.0000, max=+0.1947
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [39.5000, 39.5000] (76 moves)
+    Enabled  Z: [39.5000, 39.6798] (80 moves)
+    Delta: min=+0.0000, max=+0.1798
+
+--- Layer 197 (nominal Z=39.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [39.7000, 39.7000] (56 moves)
+    Enabled  Z: [39.7000, 39.8946] (71 moves)
+    Delta: min=+0.0000, max=+0.1946
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [39.7000, 39.7000] (80 moves)
+    Enabled  Z: [39.7000, 39.8948] (83 moves)
+    Delta: min=+0.0000, max=+0.1948
+
+--- Layer 198 (nominal Z=40.1000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [39.9000, 39.9000] (56 moves)
+    Enabled  Z: [39.9000, 40.0943] (73 moves)
+    Delta: min=+0.0000, max=+0.1943
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [39.9000, 39.9000] (83 moves)
+    Enabled  Z: [39.9000, 40.0882] (89 moves)
+    Delta: min=+0.0000, max=+0.1882
+
+--- Layer 199 (nominal Z=40.3000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:SKIN
+    Disabled Z: [40.1000, 40.1000] (43 moves)
+    Enabled  Z: [40.1000, 40.2751] (59 moves)
+    Delta: min=+0.0000, max=+0.1751
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [40.1000, 40.1000] (75 moves)
+    Enabled  Z: [40.1000, 40.2253] (77 moves)
+    Delta: min=+0.0000, max=+0.1253
+
+--- Layer 237 (nominal Z=47.9000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [47.7000, 47.7000] (61 moves)
+    Enabled  Z: [47.7000, 47.8964] (64 moves)
+    Delta: min=+0.0000, max=+0.1964
+
+--- Layer 238 (nominal Z=0.0000, top-skin=NO) ---
+  [FALSE-CONTOUR  ] ;TYPE:WALL-OUTER
+    Disabled Z: [47.9000, 47.9000] (60 moves)
+    Enabled  Z: [47.8185, 48.0000] (66 moves)
+    Delta: min=-0.0815, max=+0.1000
+
+==========================================================================================
+REPORT 3: Full layer-by-layer overview
+==========================================================================================
+  Layer   1 | Z= 0.7000 (dz=+0.7000) | unchanged  | types: SKIN, SKIRT, WALL-INNER, WALL-OUTER
+  Layer   2 | Z= 0.9000 (dz=+0.2000) | unchanged  | types: SKIN, SKIRT, WALL-INNER, WALL-OUTER
+  Layer   3 | Z= 1.1000 (dz=+0.2000) | unchanged  | types: SKIN, WALL-INNER, WALL-OUTER
+  Layer   4 | Z= 1.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer   5 | Z= 1.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer   6 | Z= 1.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer   7 | Z= 1.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer   8 | Z= 2.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer   9 | Z= 2.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  10 | Z= 2.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  11 | Z= 2.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  12 | Z= 2.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  13 | Z= 3.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  14 | Z= 3.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  15 | Z= 3.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  16 | Z= 3.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  17 | Z= 3.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  18 | Z= 4.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  19 | Z= 4.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  20 | Z= 4.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  21 | Z= 4.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  22 | Z= 4.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  23 | Z= 5.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  24 | Z= 5.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  25 | Z= 5.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  26 | Z= 5.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  27 | Z= 5.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  28 | Z= 6.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  29 | Z= 6.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  30 | Z= 6.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  31 | Z= 6.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  32 | Z= 6.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  33 | Z= 7.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  34 | Z= 7.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  35 | Z= 7.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  36 | Z= 7.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  37 | Z= 7.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  38 | Z= 8.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  39 | Z= 8.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  40 | Z= 8.5000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[8.3000,8.5000]; WALL-OUTER[BUG]: Z=[8.3000,8.5000]
+  Layer  41 | Z= 8.7000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[8.5000,8.6991]; WALL-OUTER[BUG]: Z=[8.5000,8.5077]
+  Layer  42 | Z= 8.9000 (dz=+0.2000) | CONTOURED  | types: FILL, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[8.6004,8.8856]
+  Layer  43 | Z= 9.1000 (dz=+0.2000) | CONTOURED  | types: FILL, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[8.8001,9.0655]
+  Layer  44 | Z= 9.3000 (dz=+0.2000) | CONTOURED  | types: FILL, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[9.0003,9.2605]
+  Layer  45 | Z= 9.5000 (dz=+0.2000) | CONTOURED  | types: FILL, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[9.2015,9.4812]
+  Layer  46 | Z= 9.7000 (dz=+0.2000) | CONTOURED  | types: FILL, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[9.4002,9.6647]
+  Layer  47 | Z= 9.9000 (dz=+0.2000) | CONTOURED  | types: FILL, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[9.7000,9.8633]
+  Layer  48 | Z=10.1000 (dz=+0.2000) | CONTOURED  | types: FILL, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[9.8161,10.0669]
+  Layer  49 | Z=10.3000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[10.0181,10.2802]
+  Layer  50 | Z=10.5000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[10.3000,10.4663]; WALL-OUTER[BUG]: Z=[10.2002,10.4850]
+  Layer  51 | Z=10.7000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[10.5000,10.6935]; WALL-OUTER[BUG]: Z=[10.5000,10.6985]
+  Layer  52 | Z=10.9000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[10.6259,10.7000]; WALL-OUTER[BUG]: Z=[10.6004,10.8780]
+  Layer  53 | Z=11.1000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[10.8046,11.0828]
+  Layer  54 | Z=11.3000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[11.0286,11.2827]
+  Layer  55 | Z=11.5000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[11.2054,11.4968]
+  Layer  56 | Z=11.7000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[11.4014,11.6741]
+  Layer  57 | Z=11.9000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[11.7000,11.8332]
+  Layer  58 | Z=12.1000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[11.9000,12.0246]
+  Layer  59 | Z=12.3000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[12.1000,12.2235]
+  Layer  60 | Z=12.5000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[12.3000,12.4576]
+  Layer  61 | Z=12.7000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[12.5000,12.6863]
+  Layer  62 | Z=12.9000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[12.7000,12.8788]
+  Layer  63 | Z=13.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  64 | Z=13.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  65 | Z=13.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  66 | Z=13.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  67 | Z=13.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  68 | Z=14.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  69 | Z=14.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  70 | Z=14.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  71 | Z=14.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  72 | Z=14.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  73 | Z=15.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  74 | Z=15.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  75 | Z=15.5000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[15.3000,15.5000]; WALL-OUTER[BUG]: Z=[15.3000,15.5000]
+  Layer  76 | Z=15.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  77 | Z=15.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  78 | Z=16.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  79 | Z=16.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  80 | Z=16.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  81 | Z=16.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  82 | Z=16.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  83 | Z=17.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  84 | Z=17.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  85 | Z=17.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  86 | Z=17.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  87 | Z=17.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  88 | Z=18.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  89 | Z=18.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  90 | Z=18.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  91 | Z=18.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  92 | Z=18.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  93 | Z=19.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  94 | Z=19.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  95 | Z=19.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  96 | Z=19.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  97 | Z=19.9000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer  98 | Z=20.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer  99 | Z=20.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 100 | Z=20.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 101 | Z=20.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 102 | Z=20.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 103 | Z=21.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 104 | Z=21.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 105 | Z=21.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 106 | Z=21.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 107 | Z=21.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 108 | Z=22.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 109 | Z=22.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 110 | Z=22.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 111 | Z=22.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 112 | Z=22.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 113 | Z=23.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 114 | Z=23.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 115 | Z=23.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 116 | Z=23.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 117 | Z=23.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 118 | Z=24.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 119 | Z=24.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 120 | Z=24.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 121 | Z=24.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 122 | Z=24.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 123 | Z=25.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 124 | Z=25.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 125 | Z=25.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 126 | Z=25.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 127 | Z=25.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 128 | Z=26.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 129 | Z=26.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 130 | Z=26.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 131 | Z=26.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 132 | Z=26.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 133 | Z=27.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 134 | Z=27.3000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 135 | Z=27.5000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 136 | Z=27.7000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 137 | Z=27.9000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 138 | Z=28.1000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 139 | Z=28.3000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 140 | Z=28.5000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 141 | Z=28.7000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 142 | Z=28.9000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 143 | Z=29.1000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 144 | Z=29.3000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 145 | Z=29.5000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 146 | Z=29.7000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 147 | Z=29.9000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 148 | Z=30.1000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 149 | Z=30.3000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 150 | Z=30.5000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 151 | Z=30.7000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 152 | Z=30.9000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 153 | Z=31.1000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 154 | Z=31.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 155 | Z=31.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 156 | Z=31.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 157 | Z=31.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 158 | Z=32.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 159 | Z=32.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 160 | Z=32.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 161 | Z=32.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 162 | Z=32.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 163 | Z=33.1000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 164 | Z=33.3000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 165 | Z=33.5000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 166 | Z=33.7000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 167 | Z=33.9000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 168 | Z=34.1000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 169 | Z=34.3000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 170 | Z=34.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 171 | Z=34.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 172 | Z=34.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 173 | Z=35.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 174 | Z=35.3000 (dz=+0.2000) | unchanged  | types: FILL, WALL-INNER, WALL-OUTER
+  Layer 175 | Z=35.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 176 | Z=35.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 177 | Z=35.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 178 | Z=36.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 179 | Z=36.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 180 | Z=36.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 181 | Z=36.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 182 | Z=36.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 183 | Z=37.1000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[36.9000,37.0000]
+  Layer 184 | Z=37.3000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[37.0000,37.1000]; WALL-OUTER[BUG]: Z=[37.0000,37.1000]
+  Layer 185 | Z=37.5000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 186 | Z=37.7000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 187 | Z=37.9000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 188 | Z=38.1000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 189 | Z=38.3000 (dz=+0.2000) | unchanged  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+  Layer 190 | Z=38.5000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[38.3000,38.4938]; WALL-OUTER[BUG]: Z=[38.3000,38.4743]
+  Layer 191 | Z=38.7000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[38.5000,38.6943]; WALL-OUTER[BUG]: Z=[38.5000,38.6761]
+  Layer 192 | Z=38.9000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[38.7000,38.8940]; WALL-OUTER[BUG]: Z=[38.7000,38.8975]
+  Layer 193 | Z=39.1000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[38.9000,39.0942]; WALL-OUTER[BUG]: Z=[38.8330,39.0967]
+  Layer 194 | Z=39.3000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[39.1000,39.2945]; WALL-OUTER[BUG]: Z=[39.0019,39.2928]
+  Layer 195 | Z=39.5000 (dz=+0.2000) | CONTOURED  | types: FILL, SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[39.3000,39.4943]; WALL-OUTER[BUG]: Z=[39.3000,39.4837]
+  Layer 196 | Z=39.7000 (dz=+0.2000) | CONTOURED  | types: SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[39.5000,39.6947]; WALL-OUTER[BUG]: Z=[39.5000,39.6798]
+  Layer 197 | Z=39.9000 (dz=+0.2000) | CONTOURED  | types: SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[39.7000,39.8946]; WALL-OUTER[BUG]: Z=[39.7000,39.8948]
+  Layer 198 | Z=40.1000 (dz=+0.2000) | CONTOURED  | types: SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[39.9000,40.0943]; WALL-OUTER[BUG]: Z=[39.9000,40.0882]
+  Layer 199 | Z=40.3000 (dz=+0.2000) | CONTOURED  | types: SKIN, WALL-INNER, WALL-OUTER
+              changes: SKIN[BUG]: Z=[40.1000,40.2751]; WALL-OUTER[BUG]: Z=[40.1000,40.2253]
+  Layer 200 | Z=40.5000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 201 | Z=40.7000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 202 | Z=40.9000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 203 | Z=41.1000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 204 | Z=41.3000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 205 | Z=41.5000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 206 | Z=41.7000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 207 | Z=41.9000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 208 | Z=42.1000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 209 | Z=42.3000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 210 | Z=42.5000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 211 | Z=42.7000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 212 | Z=42.9000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 213 | Z=43.1000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 214 | Z=43.3000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 215 | Z=43.5000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 216 | Z=43.7000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 217 | Z=43.9000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 218 | Z=44.1000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 219 | Z=44.3000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 220 | Z=44.5000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 221 | Z=44.7000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 222 | Z=44.9000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 223 | Z=45.1000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 224 | Z=45.3000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 225 | Z=45.5000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 226 | Z=45.7000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 227 | Z=45.9000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 228 | Z=46.1000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 229 | Z=46.3000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 230 | Z=46.5000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 231 | Z=46.7000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 232 | Z=46.9000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 233 | Z=47.1000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 234 | Z=47.3000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 235 | Z=47.5000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 236 | Z=47.7000 (dz=+0.2000) | unchanged  | types: WALL-INNER, WALL-OUTER
+  Layer 237 | Z=47.9000 (dz=+0.2000) | CONTOURED  | types: WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[47.7000,47.8964]
+  Layer 238 | Z= 0.0000 (dz=-47.9000) | CONTOURED  | types: WALL-INNER, WALL-OUTER
+              changes: WALL-OUTER[BUG]: Z=[47.8185,48.0000]
+
+==========================================================================================
+REPORT 4: ZAA_RESET lines
+==========================================================================================
+  Total ZAA_RESET lines: 484
+  Layers with resets: 38
+    Layer 40: 123 resets
+    Layer 41: 118 resets
+    Layer 193: 21 resets
+    Layer 198: 20 resets
+    Layer 199: 19 resets
+    Layer 194: 17 resets
+    Layer 195: 16 resets
+    Layer 196: 16 resets
+    Layer 197: 16 resets
+    Layer 192: 13 resets
+    Layer 191: 11 resets
+    Layer 190: 10 resets
+    Layer 75: 8 resets
+    Layer 183: 7 resets
+    Layer 51: 6 resets
+
+==========================================================================================
+REPORT 5: Z contamination — non-target extrusions at wrong Z
+==========================================================================================
+  Contaminated extrusion moves: 130
+  Layers with contamination: 1
+    Layer 1:
+      ;TYPE:SKIRT Z=0.5000 (nominal=0.3000, delta=+0.2000)
+      ;TYPE:SKIRT Z=0.5000 (nominal=0.3000, delta=+0.2000)
+      ;TYPE:SKIRT Z=0.5000 (nominal=0.3000, delta=+0.2000)
+
+==========================================================================================
+REPORT 6: E (extrusion) continuity check
+==========================================================================================
+  E discontinuities (non-retraction): 0
+
+==========================================================================================
+SUMMARY for benchy
+==========================================================================================
+  Total layers: 239
+  Layer height: 0.2mm
+  TOP-SURFACE-SKIN layers: 0
+  OK contoured layers: 0
+  [BUG] Z-LEAK: 0 layers
+  [BUG] FALSE-CONTOUR: 38 layers
+  [WARN] Collateral: 0 layers
+  Z contaminations: 130 moves
+  E discontinuities: 0
+
+##########################################################################################
+FINAL VERDICT
+##########################################################################################
+  [FAIL] ramp: ok=0, z-leak=0, false-contour=6, contamination=0, e-errors=0
+  [FAIL] benchy: ok=0, z-leak=0, false-contour=38, contamination=130, e-errors=0
